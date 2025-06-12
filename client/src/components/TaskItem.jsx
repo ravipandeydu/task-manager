@@ -85,17 +85,11 @@ const TaskItem = ({
 
   if (isEditing) {
     return (
-      <TableRow className="glass border-b border-blue-100">
-        <TableCell colSpan="5">
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {error && (
-              <div className="p-3 glass border-red-300 text-red-700 rounded-lg text-sm">
-                {error}
-              </div>
-            )}
-
+      <TableRow>
+        <TableCell colSpan={5}>
+          <form onSubmit={handleSubmit} className="space-y-4 p-2">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                 Task Title
               </label>
               <input
@@ -103,13 +97,13 @@ const TaskItem = ({
                 name="title"
                 value={editData.title}
                 onChange={handleChange}
-                className="w-full px-3 py-2 glass border-0 rounded-lg focus:outline-none focus:ring-blue-400 focus:border-blue-400 text-gray-800"
+                className="w-full px-3 py-2 glass border-0 rounded-lg focus:outline-none focus:ring-blue-400 focus:border-blue-400 text-gray-800 text-sm"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                 Assignee
               </label>
               <input
@@ -117,12 +111,12 @@ const TaskItem = ({
                 name="assignee"
                 value={editData.assignee}
                 onChange={handleChange}
-                className="w-full px-3 py-2 glass border-0 rounded-lg focus:outline-none focus:ring-blue-400 focus:border-blue-400 text-gray-800"
+                className="w-full px-3 py-2 glass border-0 rounded-lg focus:outline-none focus:ring-blue-400 focus:border-blue-400 text-gray-800 text-sm"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                 Due Date/Time
               </label>
               <input
@@ -130,20 +124,20 @@ const TaskItem = ({
                 name="dueDate"
                 value={editData.dueDate}
                 onChange={handleChange}
-                className="w-full px-3 py-2 glass border-0 rounded-lg focus:outline-none focus:ring-blue-400 focus:border-blue-400 text-gray-800"
+                className="w-full px-3 py-2 glass border-0 rounded-lg focus:outline-none focus:ring-blue-400 focus:border-blue-400 text-gray-800 text-sm"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                 Priority
               </label>
               <select
                 name="priority"
                 value={editData.priority}
                 onChange={handleChange}
-                className="w-full px-3 py-2 glass border-0 rounded-lg focus:outline-none focus:ring-blue-400 focus:border-blue-400 text-gray-800"
+                className="w-full px-3 py-2 glass border-0 rounded-lg focus:outline-none focus:ring-blue-400 focus:border-blue-400 text-gray-800 text-sm"
               >
                 <option value="P1">P1</option>
                 <option value="P2">P2</option>
@@ -152,18 +146,22 @@ const TaskItem = ({
               </select>
             </div>
 
+            {error && (
+              <div className="text-red-600 text-xs sm:text-sm">{error}</div>
+            )}
+
             <div className="flex justify-end space-x-2">
               <button
                 type="button"
                 onClick={onCancelEdit}
-                className="px-4 py-2 glass bg-gray-200/50 text-gray-700 rounded-lg hover:bg-gray-300/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                className="px-3 sm:px-4 py-1.5 sm:py-2 glass bg-gray-200/50 text-gray-700 rounded-lg hover:bg-gray-300/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-400 text-xs sm:text-sm"
                 disabled={isSubmitting}
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 bg-blue-500/70 backdrop-blur-sm text-white rounded-lg hover:bg-blue-600/70 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-lg"
+                className="px-3 sm:px-4 py-1.5 sm:py-2 bg-blue-500/70 backdrop-blur-sm text-white rounded-lg hover:bg-blue-600/70 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-lg text-xs sm:text-sm"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? "Saving..." : "Save"}
@@ -179,40 +177,46 @@ const TaskItem = ({
     <TableRow className="hover:bg-white/20 transition-colors duration-200">
       <TableCell>
         <div className="text-sm font-medium text-gray-800">{task.title}</div>
+        <div className="sm:hidden text-xs text-gray-500 mt-1">
+          {task.assignee && <div>Assigned to: {task.assignee}</div>}
+          <div>Due: {formatDate(task.dueDate)}</div>
+        </div>
       </TableCell>
-      <TableCell>
+      <TableCell className="hidden sm:table-cell">
         <div className="flex items-center">
           {task.assignee ? (
-            <Avatar className="h-8 w-8 mr-2">
-              <AvatarFallback className="bg-blue-100 text-blue-800">
+            <Avatar className="h-6 w-6 sm:h-8 sm:w-8 mr-2">
+              <AvatarFallback className="bg-blue-100 text-blue-800 text-xs sm:text-sm">
                 {getInitials(task.assignee)}
               </AvatarFallback>
             </Avatar>
           ) : null}
-          <span className="text-sm text-gray-500">{task.assignee || "-"}</span>
+          <span className="text-xs sm:text-sm text-gray-500">{task.assignee || "-"}</span>
         </div>
       </TableCell>
-      <TableCell>
-        <div className="text-sm text-gray-500">{formatDate(task.dueDate)}</div>
+      <TableCell className="hidden sm:table-cell">
+        <div className="text-xs sm:text-sm text-gray-500">{formatDate(task.dueDate)}</div>
       </TableCell>
       <TableCell>
-        <Badge className={getPriorityColor(task.priority)}>
+        <Badge className={`${getPriorityColor(task.priority)} text-xs`}>
           {task.priority}
         </Badge>
       </TableCell>
       <TableCell className="text-right">
-        <button
-          onClick={onEdit}
-          className="px-3 py-1 glass bg-blue-100/50 text-blue-600 rounded-lg hover:bg-blue-200/50 transition-all duration-200 mr-3"
-        >
-          Edit
-        </button>
-        <button
-          onClick={handleDelete}
-          className="px-3 py-1 glass bg-red-100/50 text-red-600 rounded-lg hover:bg-red-200/50 transition-all duration-200"
-        >
-          Delete
-        </button>
+        <div className="flex flex-col sm:flex-row sm:justify-end gap-2">
+          <button
+            onClick={onEdit}
+            className="px-2 sm:px-3 py-1 glass bg-blue-100/50 text-blue-600 rounded-lg hover:bg-blue-200/50 transition-all duration-200 text-xs sm:text-sm"
+          >
+            Edit
+          </button>
+          <button
+            onClick={handleDelete}
+            className="px-2 sm:px-3 py-1 glass bg-red-100/50 text-red-600 rounded-lg hover:bg-red-200/50 transition-all duration-200 text-xs sm:text-sm"
+          >
+            Delete
+          </button>
+        </div>
       </TableCell>
     </TableRow>
   );

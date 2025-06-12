@@ -47,8 +47,8 @@ const TaskList = ({ tasks, formatDate, onUpdate, onDelete }) => {
   if (tasks.length === 0) {
     return (
       <Card className="glass-card border-0 shadow-glass">
-        <CardContent className="p-6 text-center">
-          <p className="text-gray-700">
+        <CardContent className="p-4 sm:p-6 text-center">
+          <p className="text-sm sm:text-base text-gray-700">
             No tasks found. Add a new task to get started!
           </p>
         </CardContent>
@@ -58,37 +58,39 @@ const TaskList = ({ tasks, formatDate, onUpdate, onDelete }) => {
 
   return (
     <Card className="glass-card border-0 shadow-glass">
-      <CardHeader>
-        <CardTitle className="text-gray-800">Tasks</CardTitle>
+      <CardHeader className="pb-2 sm:pb-4">
+        <CardTitle className="text-base sm:text-lg text-gray-800">Tasks</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="overflow-x-auto">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Task</TableHead>
-                <TableHead>Assigned To</TableHead>
-                <TableHead>Due Date/Time</TableHead>
-                <TableHead>Priority</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {tasks.map((task) => (
-                <TaskItem
-                  key={task._id}
-                  task={task}
-                  formatDate={formatDate}
-                  getPriorityColor={getPriorityColor}
-                  isEditing={editingTask === task._id}
-                  onEdit={() => handleEdit(task)}
-                  onCancelEdit={handleCancelEdit}
-                  onSaveEdit={handleSaveEdit}
-                  onDelete={onDelete}
-                />
-              ))}
-            </TableBody>
-          </Table>
+        <div className="overflow-x-auto -mx-4 sm:mx-0">
+          <div className="inline-block min-w-full align-middle px-4 sm:px-0">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[60%] sm:w-[40%]">Task</TableHead>
+                  <TableHead className="hidden sm:table-cell">Assigned To</TableHead>
+                  <TableHead className="hidden sm:table-cell">Due Date/Time</TableHead>
+                  <TableHead>Priority</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {tasks.map((task) => (
+                  <TaskItem
+                    key={task._id}
+                    task={task}
+                    formatDate={formatDate}
+                    getPriorityColor={getPriorityColor}
+                    isEditing={editingTask === task._id}
+                    onEdit={() => handleEdit(task)}
+                    onCancelEdit={handleCancelEdit}
+                    onSaveEdit={handleSaveEdit}
+                    onDelete={onDelete}
+                  />
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </div>
       </CardContent>
     </Card>

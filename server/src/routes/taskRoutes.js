@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const taskController = require("../controllers/taskController");
 const aiTaskController = require("../controllers/aiTaskController");
+const transcriptController = require("../controllers/transcriptController");
 
 // Standard task routes
 router.post("/tasks", taskController.createTask);
@@ -13,5 +14,8 @@ router.delete("/tasks/:id", taskController.deleteTask);
 
 // AI-powered task routes
 router.post("/tasks/ai", aiTaskController.createTaskWithAI);
+
+// Transcript-based task routes
+router.post("/tasks/bulk", transcriptController.createTasksFromTranscript);
 
 module.exports = router;
