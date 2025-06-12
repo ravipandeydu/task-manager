@@ -1,5 +1,5 @@
-const Task = require('../models/Task');
-const { parseTaskInput } = require('../utils/nlpParser');
+const Task = require("../models/Task");
+const { parseTaskInput } = require("../utils/nlpParser");
 
 /**
  * Create a new task from natural language input
@@ -7,21 +7,23 @@ const { parseTaskInput } = require('../utils/nlpParser');
 exports.createTask = async (req, res) => {
   try {
     const { input } = req.body;
-    
+
     if (!input) {
-      return res.status(400).json({ message: 'Task input is required' });
+      return res.status(400).json({ message: "Task input is required" });
     }
 
     // Parse the natural language input
     const parsedTask = parseTaskInput(input);
-    
+
     // Validate required fields
     if (!parsedTask.title) {
-      return res.status(400).json({ message: 'Could not extract a task title' });
+      return res
+        .status(400)
+        .json({ message: "Could not extract a task title" });
     }
-    
+
     if (!parsedTask.dueDate) {
-      return res.status(400).json({ message: 'Could not extract a due date' });
+      return res.status(400).json({ message: "Could not extract a due date" });
     }
 
     // Create a new task
@@ -30,13 +32,15 @@ exports.createTask = async (req, res) => {
       assignee: parsedTask.assignee,
       dueDate: parsedTask.dueDate,
       formattedDueDate: parsedTask.formattedDueDate,
-      priority: parsedTask.priority
+      priority: parsedTask.priority,
     });
 
     await task.save();
     res.status(201).json(task);
   } catch (error) {
-    res.status(500).json({ message: 'Error creating task', error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error creating task", error: error.message });
   }
 };
 
@@ -46,16 +50,16 @@ exports.createTask = async (req, res) => {
 exports.getTasks = async (req, res) => {
   try {
     const { assignee, priority, sortBy } = req.query;
-    
+
     // Build query
     const query = {};
     if (assignee) query.assignee = assignee;
     if (priority) query.priority = priority;
-    
+
     // Build sort options
     let sort = {};
-    if (sortBy === 'dueDate') sort.dueDate = 1;
-    else if (sortBy === 'priority') {
+    if (sortBy === "dueDate") sort.dueDate = 1;
+    else if (sortBy === "priority") {
       // Custom sort for priority (P1 > P2 > P3 > P4)
       sort = { priority: 1 };
     } else {
@@ -66,7 +70,9 @@ exports.getTasks = async (req, res) => {
     const tasks = await Task.find(query).sort(sort);
     res.status(200).json(tasks);
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching tasks', error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error fetching tasks", error: error.message });
   }
 };
 
@@ -76,14 +82,16 @@ exports.getTasks = async (req, res) => {
 exports.getTaskById = async (req, res) => {
   try {
     const task = await Task.findById(req.params.id);
-    
+
     if (!task) {
-      return res.status(404).json({ message: 'Task not found' });
+      return res.status(404).json({ message: "Task not found" });
     }
-    
+
     res.status(200).json(task);
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching task', error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error fetching task", error: error.message });
   }
 };
 
@@ -93,37 +101,43 @@ exports.getTaskById = async (req, res) => {
 exports.updateTask = async (req, res) => {
   try {
     const { title, assignee, dueDate, priority } = req.body;
-    
+
     // Find the task
     const task = await Task.findById(req.params.id);
-    
+
     if (!task) {
-      return res.status(404).json({ message: 'Task not found' });
+      return res.status(404).json({ message: "Task not found" });
     }
-    
+
     // Update fields if provided
     if (title) task.title = title;
     if (assignee !== undefined) task.assignee = assignee;
     if (dueDate) {
       task.dueDate = dueDate;
-      
+
       // Format the date for display
       const hours = new Date(dueDate).getHours();
       const minutes = new Date(dueDate).getMinutes();
-      const ampm = hours >= 12 ? 'PM' : 'AM';
+      const ampm = hours >= 12 ? "PM" : "AM";
       const hour12 = hours % 12 || 12;
-      const formattedTime = `${hour12}:${minutes.toString().padStart(2, '0')} ${ampm}`;
-      
-      const month = new Date(dueDate).toLocaleString('default', { month: 'long' });
+      const formattedTime = `${hour12}:${minutes
+        .toString()
+        .padStart(2, "0")} ${ampm}`;
+
+      const month = new Date(dueDate).toLocaleString("default", {
+        month: "long",
+      });
       const day = new Date(dueDate).getDate();
       task.formattedDueDate = `${formattedTime}, ${day} ${month}`;
     }
     if (priority) task.priority = priority;
-    
+
     await task.save();
     res.status(200).json(task);
   } catch (error) {
-    res.status(500).json({ message: 'Error updating task', error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error updating task", error: error.message });
   }
 };
 
@@ -133,13 +147,15 @@ exports.updateTask = async (req, res) => {
 exports.deleteTask = async (req, res) => {
   try {
     const task = await Task.findByIdAndDelete(req.params.id);
-    
+
     if (!task) {
-      return res.status(404).json({ message: 'Task not found' });
+      return res.status(404).json({ message: "Task not found" });
     }
-    
-    res.status(200).json({ message: 'Task deleted successfully' });
+
+    res.status(200).json({ message: "Task deleted successfully" });
   } catch (error) {
-    res.status(500).json({ message: 'Error deleting task', error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error deleting task", error: error.message });
   }
 };

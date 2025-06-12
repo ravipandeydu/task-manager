@@ -67,12 +67,14 @@ A full-stack application that allows users to create and manage tasks using natu
 1. Clone the repository
 
 2. Install server dependencies:
+
    ```bash
    cd server
    npm install
    ```
 
 3. Install client dependencies:
+
    ```bash
    cd client
    npm install
@@ -91,12 +93,14 @@ A full-stack application that allows users to create and manage tasks using natu
 #### Development Mode
 
 1. Start the server:
+
    ```bash
    cd server
    npm run dev
    ```
 
 2. Start the client:
+
    ```bash
    cd client
    npm run dev
@@ -107,6 +111,7 @@ A full-stack application that allows users to create and manage tasks using natu
 #### Production Mode with Docker
 
 1. Build and start the containers:
+
    ```bash
    docker-compose up -d --build
    ```
@@ -134,6 +139,7 @@ npm test
 ## Natural Language Parsing Examples
 
 - "Finish landing page Aman by 11pm 20th June P1"
+
   - Title: "Finish landing page"
   - Assignee: "Aman"
   - Due Date: June 20th, 11:00 PM
@@ -153,6 +159,7 @@ The application offers two parsing methods:
 2. **AI-Powered Parsing**: Uses OpenAI to understand natural language more accurately
 
 To use AI-powered parsing:
+
 1. Set your OpenAI API key in the server's `.env` file
 2. Check the "Use AI-powered parsing" option in the task form
 

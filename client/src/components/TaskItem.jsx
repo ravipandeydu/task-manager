@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react";
 
 const TaskItem = ({
   task,
@@ -8,20 +8,22 @@ const TaskItem = ({
   onEdit,
   onCancelEdit,
   onSaveEdit,
-  onDelete
+  onDelete,
 }) => {
   const [editData, setEditData] = useState({
     title: task.title,
-    assignee: task.assignee || '',
-    dueDate: task.dueDate ? new Date(task.dueDate).toISOString().slice(0, 16) : '',
-    priority: task.priority
+    assignee: task.assignee || "",
+    dueDate: task.dueDate
+      ? new Date(task.dueDate).toISOString().slice(0, 16)
+      : "",
+    priority: task.priority,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setEditData(prev => ({ ...prev, [name]: value }));
+    setEditData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
@@ -32,13 +34,13 @@ const TaskItem = ({
     try {
       // Validate required fields
       if (!editData.title.trim()) {
-        setError('Task title is required');
+        setError("Task title is required");
         setIsSubmitting(false);
         return;
       }
 
       if (!editData.dueDate) {
-        setError('Due date is required');
+        setError("Due date is required");
         setIsSubmitting(false);
         return;
       }
@@ -47,22 +49,22 @@ const TaskItem = ({
         title: editData.title,
         assignee: editData.assignee,
         dueDate: new Date(editData.dueDate),
-        priority: editData.priority
+        priority: editData.priority,
       });
 
       if (!result.success) {
         setError(result.error);
       }
     } catch (err) {
-      setError('An unexpected error occurred');
-      console.error('Error saving task:', err);
+      setError("An unexpected error occurred");
+      console.error("Error saving task:", err);
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const handleDelete = async () => {
-    if (window.confirm('Are you sure you want to delete this task?')) {
+    if (window.confirm("Are you sure you want to delete this task?")) {
       await onDelete(task._id);
     }
   };
@@ -77,9 +79,11 @@ const TaskItem = ({
                 {error}
               </div>
             )}
-            
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Task Title</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Task Title
+              </label>
               <input
                 type="text"
                 name="title"
@@ -89,9 +93,11 @@ const TaskItem = ({
                 required
               />
             </div>
-            
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Assignee</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Assignee
+              </label>
               <input
                 type="text"
                 name="assignee"
@@ -100,9 +106,11 @@ const TaskItem = ({
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
-            
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Due Date/Time</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Due Date/Time
+              </label>
               <input
                 type="datetime-local"
                 name="dueDate"
@@ -112,9 +120,11 @@ const TaskItem = ({
                 required
               />
             </div>
-            
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Priority</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Priority
+              </label>
               <select
                 name="priority"
                 value={editData.priority}
@@ -127,7 +137,7 @@ const TaskItem = ({
                 <option value="P4">P4</option>
               </select>
             </div>
-            
+
             <div className="flex justify-end space-x-2">
               <button
                 type="button"
@@ -142,7 +152,7 @@ const TaskItem = ({
                 className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? 'Saving...' : 'Save'}
+                {isSubmitting ? "Saving..." : "Save"}
               </button>
             </div>
           </form>
@@ -157,13 +167,17 @@ const TaskItem = ({
         <div className="text-sm font-medium text-gray-900">{task.title}</div>
       </td>
       <td className="px-6 py-4 whitespace-nowrap">
-        <div className="text-sm text-gray-500">{task.assignee || '-'}</div>
+        <div className="text-sm text-gray-500">{task.assignee || "-"}</div>
       </td>
       <td className="px-6 py-4 whitespace-nowrap">
         <div className="text-sm text-gray-500">{formatDate(task.dueDate)}</div>
       </td>
       <td className="px-6 py-4 whitespace-nowrap">
-        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getPriorityColor(task.priority)}`}>
+        <span
+          className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getPriorityColor(
+            task.priority
+          )}`}
+        >
           {task.priority}
         </span>
       </td>

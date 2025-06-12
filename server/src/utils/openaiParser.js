@@ -1,5 +1,5 @@
-const { OpenAI } = require('openai');
-require('dotenv').config();
+const { OpenAI } = require("openai");
+require("dotenv").config();
 
 // Initialize OpenAI client
 const openai = new OpenAI({
@@ -12,8 +12,8 @@ const openai = new OpenAI({
  * @returns {Promise<Object>} - Extracted task details
  */
 const parseTaskWithAI = async (input) => {
-  if (!input || typeof input !== 'string') {
-    throw new Error('Input must be a non-empty string');
+  if (!input || typeof input !== "string") {
+    throw new Error("Input must be a non-empty string");
   }
 
   try {
@@ -67,46 +67,48 @@ const parseTaskWithAI = async (input) => {
             "dueDate": null,
             "priority": "P3"
           }
-          `
+          `,
         },
         {
           role: "user",
-          content: input
-        }
+          content: input,
+        },
       ],
       temperature: 0.1,
       max_tokens: 256,
-      response_format: { type: "json_object" }
+      response_format: { type: "json_object" },
     });
 
     // Parse the JSON response
     const result = JSON.parse(response.choices[0].message.content);
-    
+
     // Convert ISO date string to Date object if present
     if (result.dueDate) {
       const dueDate = new Date(result.dueDate);
       result.dueDate = dueDate;
-      
+
       // Format the date for display
       const hours = dueDate.getHours();
       const minutes = dueDate.getMinutes();
-      const ampm = hours >= 12 ? 'PM' : 'AM';
+      const ampm = hours >= 12 ? "PM" : "AM";
       const hour12 = hours % 12 || 12;
-      const formattedTime = `${hour12}:${minutes.toString().padStart(2, '0')} ${ampm}`;
-      
-      const month = dueDate.toLocaleString('default', { month: 'long' });
+      const formattedTime = `${hour12}:${minutes
+        .toString()
+        .padStart(2, "0")} ${ampm}`;
+
+      const month = dueDate.toLocaleString("default", { month: "long" });
       const day = dueDate.getDate();
       result.formattedDueDate = `${formattedTime}, ${day} ${month}`;
     }
-    
+
     // Set default priority if not provided
     if (!result.priority) {
-      result.priority = 'P3';
+      result.priority = "P3";
     }
-    
+
     return result;
   } catch (error) {
-    console.error('Error parsing task with OpenAI:', error);
+    console.error("Error parsing task with OpenAI:", error);
     throw new Error(`Failed to parse task with AI: ${error.message}`);
   }
 };

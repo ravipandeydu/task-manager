@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import TaskItem from './TaskItem';
+import { useState } from "react";
+import TaskItem from "./TaskItem";
 
 const TaskList = ({ tasks, formatDate, onUpdate, onDelete }) => {
   const [editingTask, setEditingTask] = useState(null);
@@ -22,18 +22,25 @@ const TaskList = ({ tasks, formatDate, onUpdate, onDelete }) => {
 
   const getPriorityColor = (priority) => {
     switch (priority) {
-      case 'P1': return 'bg-red-100 text-red-800';
-      case 'P2': return 'bg-orange-100 text-orange-800';
-      case 'P3': return 'bg-blue-100 text-blue-800';
-      case 'P4': return 'bg-green-100 text-green-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case "P1":
+        return "bg-red-100 text-red-800";
+      case "P2":
+        return "bg-orange-100 text-orange-800";
+      case "P3":
+        return "bg-blue-100 text-blue-800";
+      case "P4":
+        return "bg-green-100 text-green-800";
+      default:
+        return "bg-gray-100 text-gray-800";
     }
   };
 
   if (tasks.length === 0) {
     return (
       <div className="bg-white rounded-lg shadow-md p-6 text-center">
-        <p className="text-gray-500">No tasks found. Add a new task to get started!</p>
+        <p className="text-gray-500">
+          No tasks found. Add a new task to get started!
+        </p>
       </div>
     );
   }
@@ -62,7 +69,7 @@ const TaskList = ({ tasks, formatDate, onUpdate, onDelete }) => {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {tasks.map(task => (
+            {tasks.map((task) => (
               <TaskItem
                 key={task._id}
                 task={task}
