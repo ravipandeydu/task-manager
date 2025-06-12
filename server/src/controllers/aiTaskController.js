@@ -37,6 +37,7 @@ exports.createTaskWithAI = async (req, res) => {
       title: parsedTask.title,
       assignee: parsedTask.assignee || '',
       dueDate: parsedTask.dueDate,
+      formattedDueDate: parsedTask.formattedDueDate,
       priority: parsedTask.priority
     });
 

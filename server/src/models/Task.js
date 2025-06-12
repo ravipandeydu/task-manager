@@ -14,6 +14,10 @@ const TaskSchema = new mongoose.Schema({
     type: Date,
     required: [true, "Due date is required"],
   },
+  formattedDueDate: {
+    type: String,
+    trim: true,
+  },
   priority: {
     type: String,
     enum: ["P1", "P2", "P3", "P4"],

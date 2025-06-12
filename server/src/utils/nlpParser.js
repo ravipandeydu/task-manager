@@ -10,17 +10,8 @@ const parseTaskInput = (input) => {
     throw new Error('Input must be a non-empty string');
   }
 
-  // Extract due date using chrono-node
-  const parsedDate = chrono.parse(input);
-  let dueDate = null;
   let remainingText = input;
-
-  if (parsedDate.length > 0) {
-    dueDate = parsedDate[0].start.date();
-    // Remove the date part from the input
-    remainingText = input.replace(parsedDate[0].text, '');
-  }
-
+  
   // Extract priority (P1, P2, P3, P4)
   const priorityRegex = /\b(P[1-4])\b/i;
   const priorityMatch = input.match(priorityRegex);
@@ -32,13 +23,37 @@ const parseTaskInput = (input) => {
     remainingText = remainingText.replace(priorityRegex, '');
   }
 
-  // Extract assignee (looking for proper names or "to [Name]" pattern)
-  const assigneeRegex = /\b(?:to|for|by)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)\b|\b([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)\b/;
+  // Extract due date using chrono-node
+  const parsedDate = chrono.parse(remainingText);
+  let dueDate = null;
+  let formattedDueDate = null;
+
+  if (parsedDate.length > 0) {
+    dueDate = parsedDate[0].start.date();
+    
+    // Format the date for display
+    const hours = dueDate.getHours();
+    const minutes = dueDate.getMinutes();
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    const hour12 = hours % 12 || 12;
+    const formattedTime = `${hour12}:${minutes.toString().padStart(2, '0')} ${ampm}`;
+    
+    const month = dueDate.toLocaleString('default', { month: 'long' });
+    const day = dueDate.getDate();
+    formattedDueDate = `${formattedTime}, ${day} ${month}`;
+    
+    // Remove the date part from the input
+    remainingText = remainingText.replace(parsedDate[0].text, '');
+  }
+
+  // Extract assignee (looking for proper names - capitalized words)
+  // Improved regex to better identify names like "Aman" in the middle of text
+  const assigneeRegex = /\b(?:to|for|by)?\s*([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)\b/;
   const assigneeMatch = remainingText.match(assigneeRegex);
   let assignee = '';
   
   if (assigneeMatch) {
-    assignee = assigneeMatch[1] || assigneeMatch[2];
+    assignee = assigneeMatch[1] || assigneeMatch[0].replace(/^(?:to|for|by)\s+/, '');
     // Remove the assignee part from the remaining text
     remainingText = remainingText.replace(assigneeMatch[0], '');
   }
@@ -52,6 +67,7 @@ const parseTaskInput = (input) => {
     title,
     assignee,
     dueDate,
+    formattedDueDate,
     priority
   };
 };

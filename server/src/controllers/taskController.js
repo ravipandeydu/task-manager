@@ -29,6 +29,7 @@ exports.createTask = async (req, res) => {
       title: parsedTask.title,
       assignee: parsedTask.assignee,
       dueDate: parsedTask.dueDate,
+      formattedDueDate: parsedTask.formattedDueDate,
       priority: parsedTask.priority
     });
 
@@ -103,7 +104,20 @@ exports.updateTask = async (req, res) => {
     // Update fields if provided
     if (title) task.title = title;
     if (assignee !== undefined) task.assignee = assignee;
-    if (dueDate) task.dueDate = dueDate;
+    if (dueDate) {
+      task.dueDate = dueDate;
+      
+      // Format the date for display
+      const hours = new Date(dueDate).getHours();
+      const minutes = new Date(dueDate).getMinutes();
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      const hour12 = hours % 12 || 12;
+      const formattedTime = `${hour12}:${minutes.toString().padStart(2, '0')} ${ampm}`;
+      
+      const month = new Date(dueDate).toLocaleString('default', { month: 'long' });
+      const day = new Date(dueDate).getDate();
+      task.formattedDueDate = `${formattedTime}, ${day} ${month}`;
+    }
     if (priority) task.priority = priority;
     
     await task.save();
