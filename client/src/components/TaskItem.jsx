@@ -1,4 +1,7 @@
 import { useState } from "react";
+import { TableRow, TableCell } from "./ui/table";
+import { Badge } from "./ui/badge";
+import { Avatar, AvatarFallback } from "./ui/avatar";
 
 const TaskItem = ({
   task,
@@ -69,13 +72,24 @@ const TaskItem = ({
     }
   };
 
+  // Get initials for avatar
+  const getInitials = (name) => {
+    if (!name) return "?";
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .substring(0, 2);
+  };
+
   if (isEditing) {
     return (
-      <tr className="bg-blue-50">
-        <td colSpan="5" className="px-6 py-4">
+      <TableRow className="glass border-b border-blue-100">
+        <TableCell colSpan="5">
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
-              <div className="p-2 bg-red-100 border border-red-400 text-red-700 rounded text-sm">
+              <div className="p-3 glass border-red-300 text-red-700 rounded-lg text-sm">
                 {error}
               </div>
             )}
@@ -89,7 +103,7 @@ const TaskItem = ({
                 name="title"
                 value={editData.title}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                className="w-full px-3 py-2 glass border-0 rounded-lg focus:outline-none focus:ring-blue-400 focus:border-blue-400 text-gray-800"
                 required
               />
             </div>
@@ -103,7 +117,7 @@ const TaskItem = ({
                 name="assignee"
                 value={editData.assignee}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                className="w-full px-3 py-2 glass border-0 rounded-lg focus:outline-none focus:ring-blue-400 focus:border-blue-400 text-gray-800"
               />
             </div>
 
@@ -116,7 +130,7 @@ const TaskItem = ({
                 name="dueDate"
                 value={editData.dueDate}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                className="w-full px-3 py-2 glass border-0 rounded-lg focus:outline-none focus:ring-blue-400 focus:border-blue-400 text-gray-800"
                 required
               />
             </div>
@@ -129,7 +143,7 @@ const TaskItem = ({
                 name="priority"
                 value={editData.priority}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                className="w-full px-3 py-2 glass border-0 rounded-lg focus:outline-none focus:ring-blue-400 focus:border-blue-400 text-gray-800"
               >
                 <option value="P1">P1</option>
                 <option value="P2">P2</option>
@@ -142,60 +156,65 @@ const TaskItem = ({
               <button
                 type="button"
                 onClick={onCancelEdit}
-                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500"
+                className="px-4 py-2 glass bg-gray-200/50 text-gray-700 rounded-lg hover:bg-gray-300/50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-400"
                 disabled={isSubmitting}
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="px-4 py-2 bg-blue-500/70 backdrop-blur-sm text-white rounded-lg hover:bg-blue-600/70 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-lg"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? "Saving..." : "Save"}
               </button>
             </div>
           </form>
-        </td>
-      </tr>
+        </TableCell>
+      </TableRow>
     );
   }
 
   return (
-    <tr className="hover:bg-gray-50">
-      <td className="px-6 py-4 whitespace-normal">
-        <div className="text-sm font-medium text-gray-900">{task.title}</div>
-      </td>
-      <td className="px-6 py-4 whitespace-nowrap">
-        <div className="text-sm text-gray-500">{task.assignee || "-"}</div>
-      </td>
-      <td className="px-6 py-4 whitespace-nowrap">
+    <TableRow className="hover:bg-white/20 transition-colors duration-200">
+      <TableCell>
+        <div className="text-sm font-medium text-gray-800">{task.title}</div>
+      </TableCell>
+      <TableCell>
+        <div className="flex items-center">
+          {task.assignee ? (
+            <Avatar className="h-8 w-8 mr-2">
+              <AvatarFallback className="bg-blue-100 text-blue-800">
+                {getInitials(task.assignee)}
+              </AvatarFallback>
+            </Avatar>
+          ) : null}
+          <span className="text-sm text-gray-500">{task.assignee || "-"}</span>
+        </div>
+      </TableCell>
+      <TableCell>
         <div className="text-sm text-gray-500">{formatDate(task.dueDate)}</div>
-      </td>
-      <td className="px-6 py-4 whitespace-nowrap">
-        <span
-          className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getPriorityColor(
-            task.priority
-          )}`}
-        >
+      </TableCell>
+      <TableCell>
+        <Badge className={getPriorityColor(task.priority)}>
           {task.priority}
-        </span>
-      </td>
-      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+        </Badge>
+      </TableCell>
+      <TableCell className="text-right">
         <button
           onClick={onEdit}
-          className="text-blue-600 hover:text-blue-900 mr-3"
+          className="px-3 py-1 glass bg-blue-100/50 text-blue-600 rounded-lg hover:bg-blue-200/50 transition-all duration-200 mr-3"
         >
           Edit
         </button>
         <button
           onClick={handleDelete}
-          className="text-red-600 hover:text-red-900"
+          className="px-3 py-1 glass bg-red-100/50 text-red-600 rounded-lg hover:bg-red-200/50 transition-all duration-200"
         >
           Delete
         </button>
-      </td>
-    </tr>
+      </TableCell>
+    </TableRow>
   );
 };
 

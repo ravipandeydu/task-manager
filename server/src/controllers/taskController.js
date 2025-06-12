@@ -45,16 +45,69 @@ exports.createTask = async (req, res) => {
 };
 
 /**
+ * Create a new task from manual input (no natural language parsing)
+ */
+exports.createManualTask = async (req, res) => {
+  try {
+    const { title, assignee, dueDate, priority } = req.body;
+
+    // Validate required fields
+    if (!title) {
+      return res.status(400).json({ message: "Task title is required" });
+    }
+
+    if (!dueDate) {
+      return res.status(400).json({ message: "Due date is required" });
+    }
+
+    // Format the date for display
+    const dueDateObj = new Date(dueDate);
+    const hours = dueDateObj.getHours();
+    const minutes = dueDateObj.getMinutes();
+    const ampm = hours >= 12 ? "PM" : "AM";
+    const hour12 = hours % 12 || 12;
+    const formattedTime = `${hour12}:${minutes
+      .toString()
+      .padStart(2, "0")} ${ampm}`;
+
+    const month = dueDateObj.toLocaleString("default", { month: "long" });
+    const day = dueDateObj.getDate();
+    const formattedDueDate = `${formattedTime}, ${day} ${month}`;
+
+    // Create a new task
+    const task = new Task({
+      title,
+      assignee: assignee || "",
+      dueDate: dueDateObj,
+      formattedDueDate,
+      priority: priority || "P3",
+    });
+
+    await task.save();
+    res.status(201).json(task);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error creating task", error: error.message });
+  }
+};
+
+/**
  * Get all tasks with optional filtering
  */
 exports.getTasks = async (req, res) => {
   try {
-    const { assignee, priority, sortBy } = req.query;
+    const { assignee, priority, sortBy, search } = req.query;
 
     // Build query
     const query = {};
     if (assignee) query.assignee = assignee;
     if (priority) query.priority = priority;
+
+    // Add search functionality
+    if (search) {
+      query.title = { $regex: search, $options: "i" }; // Case-insensitive search in title
+    }
 
     // Build sort options
     let sort = {};

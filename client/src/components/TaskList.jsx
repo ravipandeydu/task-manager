@@ -1,5 +1,14 @@
 import { useState } from "react";
 import TaskItem from "./TaskItem";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "./ui/table";
+import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
 
 const TaskList = ({ tasks, formatDate, onUpdate, onDelete }) => {
   const [editingTask, setEditingTask] = useState(null);
@@ -37,55 +46,52 @@ const TaskList = ({ tasks, formatDate, onUpdate, onDelete }) => {
 
   if (tasks.length === 0) {
     return (
-      <div className="bg-white rounded-lg shadow-md p-6 text-center">
-        <p className="text-gray-500">
-          No tasks found. Add a new task to get started!
-        </p>
-      </div>
+      <Card className="glass-card border-0 shadow-glass">
+        <CardContent className="p-6 text-center">
+          <p className="text-gray-700">
+            No tasks found. Add a new task to get started!
+          </p>
+        </CardContent>
+      </Card>
     );
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden">
-      <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Task
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Assigned To
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Due Date/Time
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Priority
-              </th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {tasks.map((task) => (
-              <TaskItem
-                key={task._id}
-                task={task}
-                formatDate={formatDate}
-                getPriorityColor={getPriorityColor}
-                isEditing={editingTask === task._id}
-                onEdit={() => handleEdit(task)}
-                onCancelEdit={handleCancelEdit}
-                onSaveEdit={handleSaveEdit}
-                onDelete={onDelete}
-              />
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
+    <Card className="glass-card border-0 shadow-glass">
+      <CardHeader>
+        <CardTitle className="text-gray-800">Tasks</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="overflow-x-auto">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Task</TableHead>
+                <TableHead>Assigned To</TableHead>
+                <TableHead>Due Date/Time</TableHead>
+                <TableHead>Priority</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {tasks.map((task) => (
+                <TaskItem
+                  key={task._id}
+                  task={task}
+                  formatDate={formatDate}
+                  getPriorityColor={getPriorityColor}
+                  isEditing={editingTask === task._id}
+                  onEdit={() => handleEdit(task)}
+                  onCancelEdit={handleCancelEdit}
+                  onSaveEdit={handleSaveEdit}
+                  onDelete={onDelete}
+                />
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 

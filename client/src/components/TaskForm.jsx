@@ -1,11 +1,10 @@
 import { useState } from "react";
 
-const TaskForm = ({ onSubmit, onSubmitWithAI }) => {
+const TaskForm = ({ onSubmitWithAI }) => {
   const [input, setInput] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
-  const [useAI, setUseAI] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,10 +19,7 @@ const TaskForm = ({ onSubmit, onSubmitWithAI }) => {
 
     try {
       // Use AI parser if the toggle is on, otherwise use standard parser
-      const result =
-        useAI && onSubmitWithAI
-          ? await onSubmitWithAI(input)
-          : await onSubmit(input);
+      const result = await onSubmitWithAI(input);
 
       if (result.success) {
         setInput("");
@@ -47,8 +43,8 @@ const TaskForm = ({ onSubmit, onSubmitWithAI }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
-      <h2 className="text-xl font-semibold mb-4">Add New Task</h2>
+    <div className="glass-card p-6 border-0">
+      <h2 className="text-xl font-semibold mb-4 text-gray-800">Add New Task</h2>
 
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
@@ -65,7 +61,7 @@ const TaskForm = ({ onSubmit, onSubmitWithAI }) => {
           <input
             id="taskInput"
             type="text"
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-4 py-2 glass border-0 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 placeholder-gray-500 text-gray-800"
             placeholder="Enter task details..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
@@ -73,7 +69,7 @@ const TaskForm = ({ onSubmit, onSubmitWithAI }) => {
           />
         </div>
 
-        <div className="mb-4 flex items-center">
+        {/* <div className="mb-4 flex items-center">
           <input
             id="useAI"
             type="checkbox"
@@ -85,34 +81,28 @@ const TaskForm = ({ onSubmit, onSubmitWithAI }) => {
           <label htmlFor="useAI" className="ml-2 block text-sm text-gray-900">
             Use AI-powered parsing (OpenAI)
           </label>
-        </div>
+        </div> */}
 
         {error && (
-          <div className="mb-4 p-2 bg-red-100 border border-red-400 text-red-700 rounded">
+          <div className="mb-4 p-3 glass border-red-300 text-red-700 rounded-lg">
             {error}
           </div>
         )}
 
         {success && (
-          <div className="mb-4 p-2 bg-green-100 border border-green-400 text-green-700 rounded">
-            {useAI
-              ? "Task created successfully with AI!"
-              : "Task created successfully!"}
+          <div className="mb-4 p-3 glass border-green-300 text-green-700 rounded-lg">
+            {"Task created successfully!"}
           </div>
         )}
 
         <button
           type="submit"
-          className={`w-full py-2 px-4 rounded-md text-white font-medium ${
-            isSubmitting ? "bg-blue-400" : "bg-blue-600 hover:bg-blue-700"
+          className={`w-full py-3 px-4 rounded-lg text-white font-medium backdrop-blur-sm ${
+            isSubmitting ? "bg-blue-400/70" : "bg-blue-500/70 hover:bg-blue-600/70 transition-all duration-200 shadow-lg"
           }`}
           disabled={isSubmitting}
         >
-          {isSubmitting
-            ? "Adding Task..."
-            : useAI
-            ? "Add Task with AI"
-            : "Add Task"}
+          {isSubmitting ? "Adding Task..." : "Add Task"}
         </button>
       </form>
     </div>
